@@ -1,3 +1,4 @@
+from turtle import Screen, screensize
 import pygame
 from pygame.locals import *
 from pygame.math import Vector2
@@ -30,7 +31,7 @@ class Player():
     #Graphics
     player_sprite = 0
     rotation = 0
-    rot_speed = 400
+    rot_speed = 0
 
     scale_speed = 3
 
@@ -44,12 +45,12 @@ class Player():
         self.scalar = 50
 
         self.player_sprite = pygame.sprite.Sprite()
-        self.player_sprite.image = pygame.image.load("Data/Textures/Snowball.png").convert_alpha()
+        self.player_sprite.image = pygame.image.load("./Plank/Data/Textures/main.png").convert_alpha()
         self.player_sprite.rect = self.player_sprite.image.get_rect()
         self.player_sprite.image = pygame.transform.scale(self.player_sprite.image, (int(self.scale.x), int(self.scale.y)))
 
         self.position.x = Width / 2
-        self.position.y = Height / 2 
+        self.position.y = Height / 1.5 
 
         self.scalar = self.scale.x
 
@@ -67,7 +68,7 @@ class Player():
         if(keys[2] and self.is_grounded):
             self.velocity_y -= 0.01 * dt * self.jump_force
 
-        self.velocity_y += 0.00001 * dt * self.gravity_scale
+        self.velocity_y += 0.01 * dt * self.gravity_scale
 
         self.position.y += self.velocity_y * dt
 
@@ -169,7 +170,7 @@ class Enemy(Entity):
         self.position.x = random.randrange(0, 720)
         self.position.y = 0
 
-        self.initialiser((102, 107, 102),"Data/Sounds/RockHit.wav")
+        self.initialiser((54, 37, 36),"./Plank/Data/Sounds/RockHit.wav")
 
         self.tag = "enemy"
 
@@ -181,7 +182,7 @@ class Snowball(Entity):
         self.position = Vector2()
         self.position.x = random.randrange(0, 720)
         self.position.y = 0
-        self.initialiser((255, 255, 255),"Data/Sounds/SnowballHit.wav")
+        self.initialiser((237, 24, 12),"./Plank/Data/Sounds/SnowballHit.wav")
         self.tag = "snowball"
 
         self.radius = random.randrange(10, 30)
@@ -199,7 +200,7 @@ class Spawner():
 
     def __init__(self, screen):
         self.screen = screen
-        self.sound = mixer.Sound("Data/Sounds/SnowballPowerup.wav")
+        self.sound = mixer.Sound("./Plank/Data/Sounds/SnowballPowerup.wav")
 
     def check_for_player(self, player, scalar):
         global game_state
@@ -260,7 +261,7 @@ class Particle():
         self.position.x = random.randrange(0, 720)
         self.position.y = 0
         self.size = random.randrange(0, 15)
-        self.color = (255, 255, 255)
+        self.color = (99, 64, 62)
         self.speed = random.randrange(20, 50)
 
     def move(self, dt):
@@ -312,7 +313,7 @@ class Main():
     def setup_pygame(self, title, width, height):
         screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption(title)
-        favicon = pygame.image.load("Data/Textures/Favicon.png").convert_alpha()
+        favicon = pygame.image.load("./Plank/Data/Textures/lava.png").convert_alpha()
         pygame.display.set_icon(favicon)
         pygame.init()
         return screen
@@ -354,11 +355,11 @@ class Main():
 
         #Constant Sprites
         foreground = pygame.sprite.Sprite()
-        foreground.image = pygame.image.load("Data/Textures/Foreground.png").convert_alpha()
+        foreground.image = pygame.image.load("./Plank/Data/Textures/hovno2.jpg").convert_alpha()
         foreground.rect = foreground.image.get_rect()
         foreground.rect.topleft = 0, HEIGHT - 480
         foreground.image = pygame.transform.scale(foreground.image, (720, 480))
-        foreground_collider = Box_Collider(WIDTH / 2, HEIGHT - 20, 720, 120, "environment")
+        foreground_collider = Box_Collider(WIDTH / 2, HEIGHT , 720, 120, "environment")
 
         colliders.append(foreground_collider)
 
@@ -412,7 +413,7 @@ class Main():
 
         COLOR = (224, 190, 108)
 
-        sound = pygame.mixer.Sound("Data/Sounds/Start.wav")
+        sound = pygame.mixer.Sound("./Plank/Data/Sounds/Start.wav")
         play_text = font.render("PLAY", True, (255,255,255))
         play_text_y_offset = 0
 
@@ -446,8 +447,8 @@ class Main():
         while game_state != 2:
             WIDTH, HEIGHT = 720, 480
 
-            screen = self.setup_pygame("Sno Snow", WIDTH, HEIGHT)
-            font = pygame.font.Font("Data/Fonts/Inter.ttf", 32)
+            screen = self.setup_pygame("Plank", WIDTH, HEIGHT)
+            font = pygame.font.Font("./Plank/Data/Fonts/Inter.ttf", 32)
 
             if(game_state == 0):
                 self.menu(screen, font, WIDTH, HEIGHT)
@@ -455,7 +456,7 @@ class Main():
                 self.previous_frame_time = time.time()
                 self.game(screen, font, WIDTH, HEIGHT)
             
-            sound = pygame.mixer.Sound("Data/Sounds/Die.wav")
+            sound = pygame.mixer.Sound("./Plank/Data/Sounds/Die.wav")
             sound.play()
             self.reset_state()
             score = 0
