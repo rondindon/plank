@@ -1,3 +1,4 @@
+from glob import glob
 from turtle import Screen, screensize
 import pygame
 from pygame.locals import *
@@ -7,6 +8,7 @@ import time
 import random
 import math
 
+#delta time is actually the time that has passed since the last frame
 #0 = Menu, 1 = Game, 2 = Quit
 game_state = 0
 score = 0
@@ -58,6 +60,7 @@ class Player():
         global score_int
         global score
         global max_score
+        global game_state
 
         if(keys[0]):
             self.position.x -= 0.01 * dt * self.speed
@@ -313,7 +316,7 @@ class Main():
     def setup_pygame(self, title, width, height):
         screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption(title)
-        favicon = pygame.image.load("./Plank/Data/Textures/lava.png").convert_alpha()
+        favicon = pygame.image.load("./Plank/Data/Textures/lava.png")
         pygame.display.set_icon(favicon)
         pygame.init()
         return screen
@@ -325,7 +328,7 @@ class Main():
         score_int = int(score)
         score_text = text.render("SCORE: " + str(score_int),True,(0,0,0))
         screen.blit(score_text, (10, 10))
-
+        
     def draw_colliders(self, colliders, screen, color, width, height):
         for i in range(len(colliders)):
             colliders[i].draw(screen, color, width, height)
@@ -348,8 +351,11 @@ class Main():
         self.previous_frame_time = time.time()
 
         keys = [False, False, False]
-
-        player = Player(40, 40, WIDTH, HEIGHT)
+        
+        lol = mixer.Sound("./Plank/Data/Sounds/hovno.mp3")
+        lol.play()
+        
+        player = Player(60, 60, WIDTH, HEIGHT)
 
         colliders = []
 
@@ -411,7 +417,7 @@ class Main():
     def menu(self, screen, font, WIDTH, HEIGHT):
         global game_state
 
-        COLOR = (224, 190, 108)
+        COLOR = (153, 37, 87)
 
         sound = pygame.mixer.Sound("./Plank/Data/Sounds/Start.wav")
         play_text = font.render("PLAY", True, (255,255,255))
@@ -419,10 +425,6 @@ class Main():
 
         score_text = font.render("HIGH SCORE: " + str(int(max_score)), True, (255,255,255))
 
-        tutorial_text = font.render("You're Melting!", True, (255,255,255))
-        tutorial_text_2 = font.render("Collect Snow And Avoid Moving Rocks!", True, (255,255,255))
-
-        direc = 1
         while game_state == 0:
             screen.fill(COLOR)
             screen.blit(play_text, (WIDTH/2 - play_text.get_width() / 2, HEIGHT/2 - play_text.get_height() / 2 + play_text_y_offset))
